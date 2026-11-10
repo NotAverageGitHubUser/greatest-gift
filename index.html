@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The greatest gift | A fundraiser for Global Newborn Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #241a12; --paper: #f4eee4;
+    --amber: #ffc861; --ember: #d9583c; --ember-dark: #b8452c; --line: #dfd2bf;
+    --out: .28s; --in: .45s;
+    --display: "Fraunces", Georgia, serif;
+    --body: "Figtree", "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--body); color: var(--ink); background: #f1e8da; transition: background-color 1.4s ease; }
+
+  /* The scroll track is only there to give the page length. The stage stays on screen. */
+  .js #track { height: calc(8 * 80vh + 100vh); height: calc(8 * 80svh + 100svh); }
+  .js #stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; transition: opacity .3s ease; }
+  .js #stage.leaving { opacity: 0; }
+
+  .scene { padding: clamp(26px, 4vw, 54px); min-height: 100vh; min-height: 100svh; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: clamp(18px, 3vh, 34px); }
+  .scene.dark { color: #eef2f5; }
+  .js .scene { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity var(--out) ease, visibility 0s var(--out); }
+  .js .scene.on { opacity: 1; visibility: visible; transition: opacity var(--in) ease var(--out), visibility 0s var(--out); }
+
+  .words { max-width: 21em; font-size: clamp(27px, 3.5vw, 46px); }
+  .line { font-family: var(--display); font-weight: 400; font-size: 1em; line-height: 1.16; letter-spacing: -.012em; margin: 0; }
+  .line.mid { font-size: clamp(38px, 6vw, 86px); line-height: 1.02; letter-spacing: -.024em; }
+  .line.huge { font-size: clamp(46px, 7.6vw, 108px); line-height: 1; letter-spacing: -.026em; }
+  .words.wide { max-width: 24em; }
+  .label { font-size: 13px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .7; margin: 0 0 12px; }
+  .sub { font-size: 17px; line-height: 1.5; margin: 16px 0 0; max-width: 34em; }
+  .lead { font-size: clamp(19px, 2vw, 26px); line-height: 1.35; margin: 0 0 14px; max-width: 32em; }
+  .source { font-size: 13px; opacity: .75; margin: 12px 0 0; }
+  .stat-rest { font-family: var(--display); font-size: clamp(30px, 4.8vw, 66px); line-height: 1.08; letter-spacing: -.015em; margin: 8px 0 0; max-width: 17em; }
+
+  /* Marked words: amber stroke on light scenes, amber type on dark ones. */
+  mark { color: inherit; background: linear-gradient(var(--amber), var(--amber)) no-repeat 0 88% / 100% 42%; padding: 0 .06em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .dark mark { background: none; color: var(--amber); padding: 0; }
+  u.hit { --u: var(--ember); text-decoration: underline; text-decoration-color: var(--u); text-decoration-thickness: .07em; text-underline-offset: .12em; text-decoration-skip-ink: none; }
+  .dark u.hit { --u: var(--amber); }
+
+  .frame { position: relative; justify-self: center; align-self: center; width: min(100%, 980px); height: 100%; min-height: 34vh; max-height: 66vh; overflow: hidden; }
+  .frame img, .frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dim img, .dim video { filter: saturate(.7) brightness(.9); }
+  .tag { position: absolute; left: 10px; bottom: 10px; z-index: 2; background: rgba(0,0,0,.66); color: #fff; font-size: 12px; padding: 4px 9px; }
+  .slot { border: 2px dashed currentColor; display: grid; place-items: center; text-align: center; font-size: 14px; padding: 20px; opacity: .7; }
+
+  /* Gift layer: stays in place through scenes 1 to 3 while the words change above it. */
+  #gift { display: none; }
+  .js #gift { display: block; position: absolute; z-index: 3; left: clamp(26px, 4vw, 54px); right: clamp(26px, 4vw, 54px); top: 32%; bottom: 3%; max-width: 1040px; margin: 0 auto; opacity: 0; visibility: hidden; transition: opacity var(--out) ease, visibility 0s var(--out); }
+  .js #gift.on { opacity: 1; visibility: visible; transition: opacity var(--in) ease var(--out), visibility 0s var(--out); }
+
+  .box { position: absolute; left: 50%; top: 50%; width: min(42vh, 54vw); transform: translate(-50%, -50%); }
+  .shaker { transform-origin: 50% 92%; }
+  .shaker svg { display: block; width: 100%; overflow: visible; }
+  #gift:not(.open) .shaker { animation: wobble 1.25s ease-in-out infinite; }
+  #gift.open .shaker { animation: shake .1s linear 3; }
+  @keyframes wobble { 0%,62%,100% { transform: rotate(0); } 70% { transform: rotate(-4deg); } 78% { transform: rotate(4deg); } 86% { transform: rotate(-3deg); } 94% { transform: rotate(2deg); } }
+  @keyframes shake { 0%,100% { transform: translate(-3px,0) rotate(-3deg); } 50% { transform: translate(3px,-2px) rotate(3deg); } }
+
+  /* Opening: about 1.2 seconds in total. Closing when scrolling back is quick and has no delays. */
+  #lid { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .25s ease, opacity .2s ease; }
+  #gift.open #lid { transform: translate(90px, -260px) rotate(60deg); opacity: 0; transition: transform .55s cubic-bezier(.2,.7,.3,1) .3s, opacity .3s ease .55s; }
+  .box { transition: opacity .2s ease; }
+  #gift.open .box { opacity: 0; transition: opacity .3s ease .6s; }
+  .burst { position: absolute; width: 33%; aspect-ratio: 4/3; object-fit: cover; box-shadow: 0 10px 28px rgba(36,26,18,.26); opacity: 0; transform: translate(var(--dx,0), var(--dy,0)) scale(.08); transition: transform .25s ease, opacity .2s ease; }
+  #gift.open .burst { opacity: 1; transform: rotate(var(--r)); transition: transform .65s cubic-bezier(.2,1.25,.4,1) var(--d), opacity .15s ease var(--d); }
+  .b1 { left: 1%;  top: 2%;  --r: -3deg; --d: .35s; }
+  .b2 { left: 34%; top: 0;   --r: 2deg;  --d: .41s; }
+  .b3 { left: 66%; top: 5%;  --r: 3deg;  --d: .47s; }
+  .b4 { left: 15%; top: 52%; --r: -2deg; --d: .53s; }
+  .b5 { left: 51%; top: 50%; --r: 3deg;  --d: .59s; }
+  #gift .tag { left: 0; bottom: 0; opacity: 0; transition: opacity .3s ease; }
+  #gift.open .tag { opacity: 1; transition-delay: 1.2s; }
+  .hint { position: absolute; right: 0; top: 0; margin: 0; font-size: 14px; opacity: .6; transition: opacity .3s ease; }
+  #gift.open .hint { opacity: 0; }
+
+  .btn { display: inline-block; margin-top: 26px; background: var(--ember); color: #fff8ef; font-weight: 600; font-size: 18px; padding: 16px 30px; text-decoration: none; }
+  .btn:hover { background: var(--ember-dark); }
+  .note { font-size: 15px; margin: 14px 0 0; }
+  .skip { position: fixed; right: clamp(14px, 2.4vw, 30px); bottom: clamp(14px, 2.4vw, 30px); z-index: 10; background: var(--ink); color: #fff8ef; font-weight: 600; font-size: 15px; padding: 13px 20px; text-decoration: none; box-shadow: 0 0 0 1px rgba(255,248,239,.35); transition: opacity .3s ease, background-color .2s ease; }
+  .skip:hover { background: var(--ember-dark); }
+  .skip.hide { opacity: 0; pointer-events: none; }
+
+  /* Facts: plain, after the story. */
+  .after { background: var(--paper); position: relative; }
+  .facts { max-width: 1040px; padding: clamp(40px, 6vw, 80px) clamp(26px, 4vw, 54px) 20px; }
+  .facts section { display: grid; grid-template-columns: minmax(170px, 1fr) 3fr; gap: 10px 36px; padding: 30px 0; border-top: 1px solid var(--line); }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 25px; line-height: 1.15; margin: 0; }
+  .facts p { font-size: 18px; line-height: 1.6; margin: 0 0 12px; max-width: 36em; }
+  .facts a { color: var(--ember-dark); }
+  .facts a.btn { color: #fff8ef; }
+  .tiers { list-style: none; margin: 8px 0 0; padding: 0; }
+  .tiers a { display: grid; grid-template-columns: 76px 1fr; align-items: baseline; padding: 11px 0; text-decoration: none; color: inherit; border-bottom: 1px solid var(--line); }
+  .tiers a:hover { color: var(--ember-dark); }
+  .tiers b { font-family: var(--display); font-size: 24px; font-weight: 600; color: var(--ember-dark); }
+  .tiers span { font-size: 17px; }
+  footer { max-width: 1040px; padding: 26px clamp(26px, 4vw, 54px) 60px; font-size: 13px; line-height: 1.6; color: #5c5043; }
+  footer p { margin: 6px 0; max-width: 62em; }
+
+  @media (max-width: 640px) {
+    .frame { max-height: 52vh; }
+    .facts section { grid-template-columns: 1fr; }
+    .label { font-size: 10.5px; letter-spacing: .08em; white-space: nowrap; }
+    .js #gift { top: 30%; bottom: 9%; }
+    .burst { width: 56%; }
+    .b1 { left: 0;   top: 0; }
+    .b2 { left: 44%; top: 19%; }
+    .b3 { left: 0;   top: 39%; }
+    .b4 { left: 44%; top: 56%; }
+    .b5 { left: 2%;  top: 72%; }
+    #gift .tag { bottom: 2px; max-width: 46%; font-size: 11px; }
+  }
+  /* v0.8: photos and video fill the screen, words sit on top, smaller type. */
+  .words { position: relative; z-index: 1; max-width: 23em; font-size: clamp(24px, 2.7vw, 36px); }
+  .words.wide { max-width: 24em; }
+  .line.mid { font-size: clamp(32px, 4.4vw, 62px); line-height: 1.06; }
+  .line.huge { font-size: clamp(36px, 5.4vw, 76px); line-height: 1.04; }
+  .stat-rest { font-size: clamp(24px, 3.4vw, 46px); }
+  .dark .words { text-shadow: 0 1px 16px rgba(10,14,20,.4); }
+  .js .scene.on { z-index: 4; }
+  .js .scene.late.on { transition: opacity var(--in) ease .9s, visibility 0s .9s; }
+
+  .frame { position: absolute; inset: 0; justify-self: stretch; align-self: stretch; width: auto; height: auto; min-height: 0; max-height: none; z-index: 0; }
+  .frame::after, #gift::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(to bottom, rgba(15,20,26,.76) 0%, rgba(15,20,26,.5) 34%, rgba(15,20,26,.14) 72%, rgba(15,20,26,.3) 100%); }
+  .frame.slot { inset: 16px; opacity: .6; }
+  .frame.slot::after { display: none; }
+  .dim img, .dim video { filter: saturate(.85); }
+
+  .js #gift { left: 0; right: 0; top: 0; bottom: 0; max-width: none; margin: 0; }
+  #gift::after { opacity: 0; transition: opacity .2s ease; }
+  #gift.open::after { opacity: 1; transition: opacity .4s ease .8s; }
+  .box { top: 62%; }
+  .burst, #gift.open .burst { aspect-ratio: auto; box-shadow: none; }
+  #gift.open .burst { transform: none; }
+  .burst { width: 33.34%; height: 50%; }
+  .b1 { left: 0; top: 0; }
+  .b2 { left: 33.33%; top: 0; }
+  .b3 { left: 66.66%; top: 0; }
+  .b4 { left: 0; top: 50%; width: 50%; }
+  .b5 { left: 50%; top: 50%; width: 50%; }
+  #gift .tag { left: 10px; bottom: 10px; z-index: 2; }
+  .hint { left: clamp(26px, 4vw, 54px); right: auto; top: auto; bottom: 22px; }
+  @media (max-width: 640px) {
+    .burst { width: 50%; height: 33.4%; }
+    .b1 { left: 0; top: 0; }
+    .b2 { left: 50%; top: 0; }
+    .b3 { left: 0; top: 33.3%; width: 100%; }
+    .b4 { left: 0; top: 66.6%; width: 50%; }
+    .b5 { left: 50%; top: 66.6%; width: 50%; }
+    #gift .tag { bottom: 10px; max-width: 46%; }
+  }
+
+  /* v1.0: richer gift box. Everything moves with transform and opacity only, so it stays smooth. */
+  .box { z-index: 1; }
+  .burst { z-index: 2; }
+  #gift::after { z-index: 3; }
+  #gift .tag { z-index: 4; }
+  .shaker { position: relative; z-index: 2; }
+  .floor { position: absolute; left: 10%; right: 10%; bottom: -3%; height: 11%; border-radius: 50%; background: radial-gradient(closest-side, rgba(60,30,12,.38), rgba(60,30,12,0)); transition: opacity .3s ease; }
+  .glow, .rays { position: absolute; left: 50%; top: 34%; width: 150%; aspect-ratio: 1; margin-left: -75%; margin-top: -75%; border-radius: 50%; opacity: 0; pointer-events: none; }
+  .glow { background: radial-gradient(closest-side, rgba(255,236,190,.98), rgba(255,200,97,.55) 45%, rgba(255,200,97,0) 72%); }
+  .rays { background: repeating-conic-gradient(rgba(255,226,160,.6) 0 9deg, rgba(255,226,160,0) 9deg 30deg); -webkit-mask: radial-gradient(closest-side, #000 25%, transparent 92%); mask: radial-gradient(closest-side, #000 25%, transparent 92%); }
+  .spark { position: absolute; left: 50%; top: 36%; width: 14px; height: 14px; margin: -7px; opacity: 0; background: #ffd98a; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
+
+  #gift:not(.open) .shaker { animation: idle 2.8s cubic-bezier(.45,0,.3,1) infinite; }
+  #gift:not(.open) .floor { animation: floorIdle 2.8s cubic-bezier(.45,0,.3,1) infinite; }
+  @keyframes idle {
+    0%, 52%, 100% { transform: none; }
+    60% { transform: translateY(-5%) rotate(-3.5deg); }
+    70% { transform: translateY(-1%) rotate(3deg); }
+    80% { transform: translateY(-3%) rotate(-2deg); }
+    90% { transform: rotate(1deg); }
+  }
+  @keyframes floorIdle { 0%, 52%, 90%, 100% { transform: none; opacity: 1; } 60% { transform: scaleX(.86); opacity: .65; } 80% { transform: scaleX(.93); opacity: .8; } }
+
+  #gift.open .shaker { animation: wind .46s cubic-bezier(.4,0,.25,1) both; }
+  @keyframes wind {
+    0% { transform: none; }
+    30% { transform: scale(1.05,.9) rotate(-2.5deg); }
+    60% { transform: scale(.97,1.03) rotate(2.5deg); }
+    100% { transform: scale(1.02,.98) rotate(0); }
+  }
+  #gift.open #lid { opacity: 1; transform: none; transition: none; animation: lidOff .78s cubic-bezier(.2,.75,.3,1) .32s both; }
+  @keyframes lidOff {
+    0% { transform: none; opacity: 1; }
+    70% { opacity: 1; }
+    100% { transform: translate(70px, -330px) rotate(34deg); opacity: 0; }
+  }
+  #gift.open .glow { animation: bloom 1.25s cubic-bezier(.2,.7,.3,1) .36s both; }
+  @keyframes bloom { 0% { transform: scale(.15); opacity: 0; } 28% { opacity: 1; } 100% { transform: scale(2.1); opacity: 0; } }
+  #gift.open .rays { animation: rays 1.25s cubic-bezier(.2,.7,.3,1) .38s both; }
+  @keyframes rays { 0% { transform: scale(.25) rotate(0); opacity: 0; } 30% { opacity: .95; } 100% { transform: scale(1.9) rotate(38deg); opacity: 0; } }
+  #gift.open .spark { animation: fly 1s cubic-bezier(.16,.8,.3,1) var(--w) both; }
+  @keyframes fly { 0% { transform: none; opacity: 0; } 15% { opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(var(--z)) rotate(120deg); opacity: 0; } }
+  #gift.open .floor { opacity: 0; transition: opacity .3s ease .5s; }
+  #gift.open .box { opacity: 0; transition: opacity .35s ease .95s; }
+
+  #gift.open .burst { transition: transform .9s cubic-bezier(.16,1,.3,1) var(--d), opacity .22s ease var(--d); }
+  .b1 { --d: .46s; }
+  .b2 { --d: .53s; }
+  .b3 { --d: .60s; }
+  .b4 { --d: .67s; }
+  .b5 { --d: .74s; }
+  #gift.open::after { transition: opacity .5s ease 1.05s; }
+  #gift.open .tag { transition-delay: 1.7s; }
+  .js .scene.late.on { transition: opacity var(--in) ease 1.15s, visibility 0s 1.15s; }
+
+  /* v1.1: a build-up shake, then the opening. Starts of everything after the shake moved back by 0.5 s. */
+  .conf { width: 9px; height: 15px; clip-path: none; background: var(--c); border-radius: 1px; }
+  #gift.open .spark { animation-delay: calc(var(--w) + .5s); }
+  #gift.open .shaker { animation: rumble 1.2s linear both; }
+  @keyframes rumble {
+    0% { transform: none; animation-timing-function: ease-in-out; }
+    8% { transform: rotate(-1.5deg); animation-timing-function: ease-in-out; }
+    16% { transform: rotate(1.5deg); animation-timing-function: ease-in-out; }
+    24% { transform: translateY(-1%) rotate(-2.5deg); animation-timing-function: ease-in-out; }
+    32% { transform: rotate(2.5deg); animation-timing-function: ease-in-out; }
+    39% { transform: translateY(-2%) rotate(-4deg); animation-timing-function: ease-in-out; }
+    46% { transform: rotate(4deg); animation-timing-function: ease-in-out; }
+    52% { transform: translateY(-3%) rotate(-5.5deg); animation-timing-function: ease-in-out; }
+    58% { transform: rotate(5.5deg); animation-timing-function: ease-in-out; }
+    64% { transform: translateY(-2%) rotate(-3deg); animation-timing-function: ease-in-out; }
+    71% { transform: scale(1.09,.84); animation-timing-function: cubic-bezier(.2,.8,.3,1); }
+    80% { transform: translateY(-4%) scale(.93,1.1); animation-timing-function: ease-in-out; }
+    90% { transform: scale(1.03,.97); animation-timing-function: ease-in-out; }
+    100% { transform: none; }
+  }
+  #gift.open #lid { opacity: 1; transform: none; transition: none; animation: lidRattle .82s linear both, lidOff .85s cubic-bezier(.2,.75,.3,1) .85s both; }
+  @keyframes lidRattle {
+    0%, 20% { transform: none; }
+    30% { transform: translateY(-1.5px) rotate(-.8deg); }
+    40% { transform: translateY(0) rotate(.8deg); }
+    50% { transform: translateY(-3px) rotate(-1.5deg); }
+    60% { transform: translateY(-1px) rotate(1.5deg); }
+    70% { transform: translateY(-5px) rotate(-2.5deg); }
+    80% { transform: translateY(-2px) rotate(2.5deg); }
+    90% { transform: translateY(-7px) rotate(-1.5deg); }
+    100% { transform: translateY(-2px); }
+  }
+  @keyframes lidOff {
+    0% { transform: translateY(-2px); opacity: 1; }
+    45% { transform: translate(38px, -210px) rotate(20deg); opacity: 1; }
+    75% { opacity: 1; }
+    100% { transform: translate(84px, -360px) rotate(52deg); opacity: 0; }
+  }
+  #gift.open .glow { animation-delay: .9s; }
+  #gift.open .rays { animation-delay: .92s; }
+  #gift.open .floor { transition-delay: 1.05s; }
+  #gift.open .box { transition: opacity .4s ease 1.5s; }
+  .b1 { --d: 1s; }
+  .b2 { --d: 1.08s; }
+  .b3 { --d: 1.16s; }
+  .b4 { --d: 1.24s; }
+  .b5 { --d: 1.32s; }
+  #gift.open::after { transition: opacity .6s ease 1.7s; }
+  .js .scene.late.on { transition: opacity .9s ease 1.9s, visibility 0s 1.9s; }
+
+  .js.first .scene.on, .js.first #gift.on { transition: none; }
+  /* Slower fades between slides. */
+  :root { --out: .6s; --in: .9s; }
+  body { transition: background-color 1.8s ease; }
+  .js #stage { transition: opacity .6s ease; }
+
+  /* Words a little closer to the centre. */
+  .scene { padding-top: clamp(52px, 13vh, 130px); padding-left: clamp(34px, 11vw, 190px); padding-right: clamp(26px, 6vw, 100px); }
+
+  /* Reduced-motion setting: keep the gentle fades, drop the shaking and flying. */
+  @media (prefers-reduced-motion: reduce) {
+    #gift .shaker, #gift.open .shaker, #gift:not(.open) .shaker { animation: none !important; }
+    #gift.open #lid { animation: none !important; opacity: 0; }
+    #gift:not(.open) .floor { animation: none !important; }
+    .glow, .rays, .spark { display: none; }
+    .burst, #gift.open .burst { transform: none; }
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js','first');</script>
+
+<a class="skip" id="skip" href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener">Skip the story and donate</a>
+
+<div id="track">
+  <div id="stage">
+
+    <div class="scene" data-bg="#f1e8da">
+      <div class="words wide">
+        <p class="label">A fundraiser for Global Newborn Solutions</p>
+        <p class="line mid">What is the <mark>greatest gift</mark> you have ever been given?</p>
+      </div>
+    </div>
+
+    <div class="scene dark" data-bg="#ebe2d4">
+      <div class="words wide"><p class="line mid">For me, it was <mark>life.</mark></p></div>
+    </div>
+
+    <div class="scene dark" data-bg="#d3ccc1">
+      <div class="words"><p class="line">Even with all my problems, stresses and worries, I <mark>love being alive.</mark></p></div>
+    </div>
+
+    <div class="scene dark dim" data-bg="#47525c">
+      <div class="words">
+        <p class="line huge"><span id="count">1</span> million</p>
+        <p class="stat-rest">newborn babies die within their <u class="hit">first 24 hours.</u></p>
+        <p class="source">World Health Organization, newborn mortality fact sheet</p>
+      </div>
+    </div>
+
+    <div class="scene dark" data-bg="#3d4852" style="grid-template-rows:auto">
+      <div class="words"><p class="line huge">They were given the <mark>same gift,</mark> and they lose it within a <u class="hit">single day.</u></p></div>
+    </div>
+
+    <div class="scene dark" data-bg="#46515a" style="grid-template-rows:auto">
+      <div class="words">
+        <p class="line">When I learned about <u class="hit">neonatal hypothermia</u>, I realized that fixing it could give some of these babies a chance at the life I get to enjoy.</p>
+        <p class="sub">Neonatal hypothermia is when a newborn baby's body gets dangerously cold.</p>
+      </div>
+    </div>
+
+    <div class="scene dark dim" data-bg="#3d4852" id="life">
+      <div class="words"><p class="line huge">Think about everything they <u class="hit">never get to experience.</u></p></div>
+      <div class="frame" id="reel">
+        <video id="montage" muted loop playsinline preload="metadata" poster="montage-poster.jpg" aria-label="A birthday, a party, a graduation and a wedding"><source media="(max-width: 640px)" src="montage-phone.mp4"><source src="montage.mp4"></video>
+      </div>
+    </div>
+
+    <div class="scene dark" data-bg="#4d5862">
+      <div class="words">
+        <p class="lead">A reusable mattress, heated with boiled water, keeps a newborn warm without electricity.</p>
+        <p class="line huge"><mark>$25</mark> makes one. It serves <u class="hit">four babies.</u></p>
+      </div>
+      <div class="frame slot"><span>Placeholder: GNS photo of a Dream Warmer in use</span></div>
+    </div>
+
+    <div class="scene" data-bg="#e8d9c3" style="grid-template-rows:auto">
+      <div class="words">
+        <p class="line huge">Would you help someone else <u class="hit">experience their greatest gift</u>?</p>
+        <a class="btn" href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener">Donate through Global Newborn Solutions</a>
+        <p class="note">Your donation goes straight to the charity. I never handle any money.</p>
+        <p class="note">Brandon Dong</p>
+      </div>
+    </div>
+
+    <div id="gift" aria-hidden="true">
+      <div class="box">
+        <div class="floor"></div>
+        <div class="glow"></div>
+        <div class="rays"></div>
+        <i class="spark" style="--x:-210px;--y:-190px;--z:1.1;--w:.40s"></i>
+        <i class="spark" style="--x:-130px;--y:-290px;--z:.7;--w:.46s"></i>
+        <i class="spark" style="--x:-40px;--y:-340px;--z:1.2;--w:.38s"></i>
+        <i class="spark" style="--x:70px;--y:-320px;--z:.8;--w:.50s"></i>
+        <i class="spark" style="--x:160px;--y:-260px;--z:1.3;--w:.42s"></i>
+        <i class="spark" style="--x:230px;--y:-150px;--z:.7;--w:.54s"></i>
+        <i class="spark" style="--x:-260px;--y:-70px;--z:.8;--w:.52s"></i>
+        <i class="spark" style="--x:270px;--y:-40px;--z:1;--w:.47s"></i>
+        <i class="spark conf" style="--x:-180px;--y:-240px;--z:1;--w:0.41s;--c:#d9583c"></i>
+        <i class="spark conf" style="--x:-90px;--y:-320px;--z:0.9;--w:0.47s;--c:#ffc861"></i>
+        <i class="spark conf" style="--x:20px;--y:-360px;--z:1.1;--w:0.39s;--c:#7fb6c8"></i>
+        <i class="spark conf" style="--x:120px;--y:-300px;--z:1;--w:0.49s;--c:#d9583c"></i>
+        <i class="spark conf" style="--x:200px;--y:-220px;--z:0.9;--w:0.44s;--c:#fff0cf"></i>
+        <i class="spark conf" style="--x:-240px;--y:-130px;--z:1;--w:0.52s;--c:#7fb6c8"></i>
+        <i class="spark conf" style="--x:250px;--y:-100px;--z:1.1;--w:0.46s;--c:#ffc861"></i>
+        <i class="spark conf" style="--x:-30px;--y:-270px;--z:0.8;--w:0.55s;--c:#fff0cf"></i>
+        <div class="shaker">
+        <svg viewBox="0 0 240 250" role="presentation">
+          <defs>
+            <linearGradient id="gBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0694a"/><stop offset=".55" stop-color="#c8492e"/><stop offset="1" stop-color="#9c3320"/></linearGradient>
+            <linearGradient id="gLid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f08465"/><stop offset="1" stop-color="#d4563a"/></linearGradient>
+            <linearGradient id="gRib" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e9a93f"/><stop offset=".45" stop-color="#ffe0a0"/><stop offset="1" stop-color="#e3a03a"/></linearGradient>
+            <linearGradient id="gLoop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffdc95"/><stop offset="1" stop-color="#e59f36"/></linearGradient>
+            <pattern id="gDots" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.7" fill="#fff" opacity=".2"/><circle cx="12" cy="12" r="1.7" fill="#ffd98a" opacity=".24"/></pattern>
+            <linearGradient id="gShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1208" stop-opacity=".42"/><stop offset="1" stop-color="#3a1208" stop-opacity="0"/></linearGradient>
+          </defs>
+          <rect x="42" y="88" width="156" height="20" rx="3" fill="#4d170b"/>
+          <rect x="34" y="100" width="172" height="140" rx="7" fill="url(#gBody)"/>
+          <rect x="34" y="100" width="172" height="140" rx="7" fill="url(#gDots)"/>
+          <rect x="34" y="104" width="172" height="26" fill="url(#gShade)"/>
+          <rect x="104" y="100" width="32" height="140" fill="url(#gRib)"/>
+          <rect x="44" y="134" width="7" height="92" rx="3.5" fill="#fff" opacity=".13"/>
+          <g id="lid">
+            <path d="M120 60 C104 22 58 14 56 40 C55 60 96 66 120 60 Z" fill="url(#gLoop)"/>
+            <path d="M120 60 C136 22 182 14 184 40 C185 60 144 66 120 60 Z" fill="url(#gLoop)"/>
+            <path d="M118 58 C104 38 78 32 72 41 C78 50 102 58 118 58 Z" fill="#c9852a" opacity=".55"/>
+            <path d="M122 58 C136 38 162 32 168 41 C162 50 138 58 122 58 Z" fill="#c9852a" opacity=".55"/>
+            <rect x="18" y="58" width="204" height="48" rx="8" fill="url(#gLid)"/>
+            <rect x="18" y="58" width="204" height="48" rx="8" fill="url(#gDots)"/>
+            <rect x="26" y="63" width="188" height="6" rx="3" fill="#fff" opacity=".22"/>
+            <rect x="104" y="58" width="32" height="48" fill="url(#gRib)"/>
+            <rect x="107" y="47" width="26" height="20" rx="8" fill="#f4bb56"/>
+            <path d="M130 62 C150 74 164 76 172 92" fill="none" stroke="#e8a63c" stroke-width="2"/>
+            <path d="M164 92 h18 l6 8 v22 h-30 v-22 z" fill="#fff6e4" stroke="#d9a24a" stroke-width="2" transform="rotate(8 172 104)"/>
+          </g>
+        </svg>
+      </div></div>
+      <img class="burst b1" src="photos/place1.jpg" alt="A train at sunset">
+      <img class="burst b2" src="photos/place2.jpg" alt="A sunset behind bare trees">
+      <img class="burst b3" src="photos/place3.jpg" alt="A river running through green trees">
+      <img class="burst b4" src="photos/place4.jpg" alt="Kayaks on a shoreline under a big sky">
+      <img class="burst b5" src="photos/place5.jpg" alt="A chateau-style hotel against the sky">
+      <p class="hint">Scroll to open</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="after" id="after">
+  <div class="facts">
+    <section>
+      <h2>The problem</h2>
+      <div>
+        <p>Babies born too early or too small can't hold their own body temperature. The usual fix is an incubator or a radiant warmer, and both need steady electricity. Many hospitals that care for newborns don't have it.</p>
+        <p>Cold is rarely the only cause when a newborn dies. It contributes to many of these deaths alongside infection, early birth and trouble breathing at birth (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3606398/" target="_blank" rel="noopener">Lunze et al., 2013</a>).</p>
+      </div>
+    </section>
+    <section>
+      <h2>The Dream Warmer</h2>
+      <div>
+        <p>Global Newborn Solutions makes the Dream Warmer, a reusable mattress filled with a material that melts at 37&nbsp;&deg;C, which is body temperature. It is heated with boiled water, then releases that heat slowly and holds a safe temperature for up to six hours. A built-in indicator shows when it is safe to place a baby on it. It needs no electricity.</p>
+        <p>It has been through six studies on three continents, including three clinical trials in Rwanda, and it is in use in more than a dozen countries.</p>
+      </div>
+    </section>
+    <section>
+      <h2>What your gift does</h2>
+      <div>
+        <p>These figures are the charity's own, from its donation page.</p>
+        <ul class="tiers">
+          <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$25</b><span>makes one mattress, which serves four babies</span></a></li>
+          <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$50</b><span>the backpack, sleeve and thermos for carrying a warmer to a patient</span></a></li>
+          <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$100</b><span>three mattresses plus the carry kit, serving twelve babies</span></a></li>
+          <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$250</b><span>shipping and delivery to a clinic</span></a></li>
+          <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$500</b><span>training for nurses, midwives and birth attendants</span></a></li>
+        </ul>
+        <a class="btn" href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener">Donate now</a>
+      </div>
+    </section>
+    <!-- MATCH: add only once Dad confirms. PROGRESS: GiveLively may show this automatically. -->
+    <section>
+      <h2>Can't give right now?</h2>
+      <div><p>Follow Global Newborn Solutions and share this page with one person. <a href="https://www.globalnewborn.org" target="_blank" rel="noopener">globalnewborn.org</a></p></div>
+    </section>
+  </div>
+  <footer>
+    <p>Global Newborn Solutions is a registered US nonprofit, 501(c)(3), EIN 83-2669843. It was founded by Dr. Anne Hansen, medical director of the newborn intensive care unit at Boston Children's Hospital.</p>
+    <p>Because it is a US charity, donations do not come with a Canadian tax receipt.</p>
+    <p>Gifts support the Dream Warmer program as a whole. They are not tied to a specific clinic or country.</p>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var track = document.getElementById('track'), stage = document.getElementById('stage');
+    var scenes = [].slice.call(document.querySelectorAll('.scene'));
+    var gift = document.getElementById('gift'), skip = document.getElementById('skip');
+    var count = document.getElementById('count'), video = document.getElementById('montage');
+    var STAT = 3, LIFE = 6, ASK = scenes.length - 1;
+    var cur = -1, counted = false;
+
+    // Where each photo must start so it appears to come out of the box.
+    function aim() {
+      gift.querySelectorAll('.burst').forEach(function (im) {
+        im.style.setProperty('--dx', (gift.clientWidth / 2 - (im.offsetLeft + im.offsetWidth / 2)) + 'px');
+        im.style.setProperty('--dy', (gift.clientHeight * .54 - (im.offsetTop + im.offsetHeight / 2)) + 'px');
+      });
+    }
+
+    function countUp() {
+      if (counted || calm) return;
+      counted = true;
+      var start = performance.now() + 800, ms = 1200;
+      (function tick(now) {
+        var t = Math.max(0, Math.min(1, (now - start) / ms));
+        count.textContent = t < 1 ? (1 - Math.pow(1 - t, 3)).toFixed(2) : '1';
+        if (t < 1) requestAnimationFrame(tick);
+      })(performance.now());
+    }
+
+    // If a phone refuses to autoplay, the still image stays on screen instead.
+    function playReel(on) {
+      if (!on) { video.pause(); return; }
+      var p = video.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    function show(i) {
+      if (i === cur) return;
+      scenes[1].classList.toggle('late', i === 1 && cur === 0);
+      scenes.forEach(function (s, n) { s.classList.toggle('on', n === i); });
+      cur = i;
+      gift.classList.toggle('on', i < STAT);
+      gift.classList.toggle('open', i >= 1);
+      document.body.style.backgroundColor = scenes[i].getAttribute('data-bg');
+      skip.classList.toggle('hide', i === ASK);
+      if (i === STAT) countUp();
+      playReel(i === LIFE);
+    }
+
+    function onScroll() {
+      var travel = track.offsetHeight - window.innerHeight;
+      var y = Math.max(0, -track.getBoundingClientRect().top);
+      var i = Math.min(scenes.length - 1, Math.round(y / (travel / (scenes.length - 1))));
+      show(i);
+      var leaving = track.getBoundingClientRect().bottom < window.innerHeight * .92;
+      stage.classList.toggle('leaving', leaving);
+      if (leaving) { document.body.style.backgroundColor = '#f4eee4'; skip.classList.remove('hide'); }
+      else if (cur >= 0) { document.body.style.backgroundColor = scenes[cur].getAttribute('data-bg'); skip.classList.toggle('hide', cur === ASK); }
+    }
+
+    var request = onScroll;
+    window.addEventListener('scroll', request, { passive: true });
+    window.addEventListener('resize', function () { aim(); request(); });
+    window.addEventListener('load', function () { aim(); request(); });
+    aim();
+    onScroll();
+    setTimeout(function () { document.documentElement.classList.remove('first'); }, 150);
+  })();
+</script>
+</body>
+</html>
