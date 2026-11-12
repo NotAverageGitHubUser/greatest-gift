@@ -20,7 +20,7 @@
   body { margin: 0; font-family: var(--body); color: var(--ink); background: #f1e8da; transition: background-color 1.4s ease; }
 
   /* The scroll track is only there to give the page length. The stage stays on screen. */
-  .js #track { height: calc(8 * 80vh + 100vh); height: calc(8 * 80svh + 100svh); }
+  .js #track { height: calc(7 * 80vh + 100vh); height: calc(7 * 80svh + 100svh); }
   .js #stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; transition: opacity .3s ease; }
   .js #stage.leaving { opacity: 0; }
 
@@ -278,6 +278,19 @@
   .factfig img { width: 100%; display: block; }
   .factfig figcaption { font-size: 14px; line-height: 1.45; color: #5c5043; margin-top: 8px; }
 
+  .scene.bottom { grid-template-rows: 1fr auto; padding-bottom: clamp(84px, 13vh, 130px); }
+  .scene.bottom .words { grid-row: 2; }
+  .scene.bottom .frame::after { background: linear-gradient(to top, rgba(15,20,26,.86) 0%, rgba(15,20,26,.55) 32%, rgba(15,20,26,0) 62%); }
+  .scene.bottom .sub { font-size: clamp(16px, 1.6vw, 19px); max-width: 30em; opacity: .9; }
+  .mapframe { top: 44%; bottom: 0; left: 0; right: 0; }
+  .mapframe::after { display: none; }
+  #map { width: 100%; height: calc(100% - 64px); display: block; }
+  .maplegend { position: absolute; left: clamp(34px, 11vw, 190px); right: 24px; bottom: 18px; margin: 0; font-size: 12.5px; line-height: 1.45; opacity: .85; max-width: 46em; }
+  .maplegend .key, .maplegend .dot { display: inline-block; width: 12px; height: 12px; vertical-align: -1px; margin-right: 4px; }
+  .maplegend .key { background: #ffc861; }
+  .maplegend .dot { background: #d9583c; border-radius: 50%; margin-left: 6px; }
+  @media (max-width: 640px) { .mapframe { top: 46%; } .maplegend { left: 18px; bottom: 74px; } #map { height: calc(100% - 140px); } }
+
   /* Reduced-motion setting: keep the gentle fades, drop the shaking and flying. */
   @media (prefers-reduced-motion: reduce) {
     #gift .shaker, #gift.open .shaker, #gift:not(.open) .shaker { animation: none !important; }
@@ -318,17 +331,13 @@
         <p class="sub">For every degree colder, a newborn's risk of dying rises by 80%.</p>
         <p class="source">Lunze et al., BMC Medicine, 2013 (review of hospital studies). Mullany et al., 2010 (study of 23,240 newborns in Nepal).</p>
       </div>
+      <div class="frame mapframe"><svg id="map" role="img" aria-label="World map highlighting low and lower-middle income countries, with Nepal marked"></svg>
+        <p class="maplegend"><span class="key"></span> Low and lower-middle income countries (World Bank income groups, as recorded in Natural Earth map data). <span class="dot"></span> Nepal, where the study of 23,240 newborns took place.</p>
+      </div>
     </div>
 
     <div class="scene dark" data-bg="#3d4852" style="grid-template-rows:auto">
       <div class="words"><p class="line huge">They were given the <mark>same gift,</mark> but <u class="hit">the cold can take it away.</u></p></div>
-    </div>
-
-    <div class="scene dark" data-bg="#46515a" style="grid-template-rows:auto">
-      <div class="words">
-        <p class="line">When I learned about <u class="hit">neonatal hypothermia</u>, I realized that fixing it could give some of these babies a chance at the life I get to enjoy.</p>
-        <p class="sub">Neonatal hypothermia is when a newborn baby's body gets dangerously cold.</p>
-      </div>
     </div>
 
     <div class="scene dark dim" data-bg="#3d4852" id="life">
@@ -338,12 +347,12 @@
       </div>
     </div>
 
-    <div class="scene dark" data-bg="#4d5862">
+    <div class="scene dark bottom" data-bg="#4d5862">
       <div class="words">
-        <p class="lead">A reusable mattress, heated with boiled water, keeps a newborn warm without electricity.</p>
         <p class="line huge"><mark>$25</mark> makes one. It serves <u class="hit">four babies.</u></p>
+        <p class="sub">The Dream Warmer is a reusable mattress. It is heated with boiled water and keeps a newborn warm without electricity.</p>
       </div>
-      <div class="frame lower"><img src="photos/gns-dream-warmer.jpg" alt="A newborn named Bintu wrapped on a Dream Warmer mattress" style="object-position:50% 12%"></div>
+      <div class="frame"><img src="photos/gns-dream-warmer.jpg" alt="A newborn named Bintu wrapped on a Dream Warmer mattress" style="object-position:50% 16%"></div>
     </div>
 
     <div class="scene" data-bg="#e8d9c3" style="grid-template-rows:auto">
@@ -472,7 +481,7 @@
     var scenes = [].slice.call(document.querySelectorAll('.scene'));
     var gift = document.getElementById('gift'), skip = document.getElementById('skip');
     var count = document.getElementById('count'), video = document.getElementById('montage');
-    var STAT = 3, LIFE = 6, ASK = scenes.length - 1;
+    var STAT = 3, LIFE = 5, ASK = scenes.length - 1;
     var cur = -1, counted = false;
 
     // Where each photo must start so it appears to come out of the box.
@@ -532,6 +541,33 @@
     aim();
     onScroll();
     setTimeout(function () { document.documentElement.classList.remove('first'); }, 150);
+  })();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+  (function () {
+    var svg = document.getElementById('map');
+    if (!svg || !window.d3) return;
+    fetch('https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@v5.1.2/geojson/ne_110m_admin_0_countries.geojson')
+      .then(function (r) { return r.json(); })
+      .then(function (geo) {
+        geo.features = geo.features.filter(function (f) { return f.properties.NAME !== 'Antarctica'; });
+        function draw() {
+          var w = svg.clientWidth, h = svg.clientHeight;
+          if (!w || !h) return;
+          var proj = d3.geoNaturalEarth1().fitSize([w, h], geo), path = d3.geoPath(proj);
+          var g = d3.select(svg).html('');
+          g.selectAll('path').data(geo.features).enter().append('path').attr('d', path)
+            .attr('fill', function (f) { var i = f.properties.INCOME_GRP || ''; return /^[45]/.test(i) ? '#ffc861' : 'rgba(238,242,245,.16)'; })
+            .attr('stroke', 'rgba(20,29,38,.7)').attr('stroke-width', .5);
+          var nepal = proj([84.1, 28.4]);
+          g.append('circle').attr('cx', nepal[0]).attr('cy', nepal[1]).attr('r', 6).attr('fill', '#d9583c').attr('stroke', '#fff').attr('stroke-width', 1.5);
+          g.append('text').attr('x', nepal[0] + 10).attr('y', nepal[1] - 8).text('Nepal').attr('fill', '#fff').attr('font-size', 13).attr('font-family', 'Figtree, sans-serif');
+        }
+        draw();
+        window.addEventListener('resize', draw);
+      })
+      .catch(function () { svg.style.display = 'none'; });
   })();
 </script>
 </body>
