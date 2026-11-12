@@ -291,6 +291,8 @@
   .maplegend .dot { background: #d9583c; border-radius: 50%; margin-left: 6px; }
   @media (max-width: 640px) { .mapframe { top: 46%; } .maplegend { left: 18px; bottom: 74px; } #map { height: calc(100% - 140px); } }
 
+  @media (max-width: 640px) { .frame.mothers { bottom: auto; height: 31%; } .frame.mothers::after { display: none; } }
+
   /* Reduced-motion setting: keep the gentle fades, drop the shaking and flying. */
   @media (prefers-reduced-motion: reduce) {
     #gift .shaker, #gift.open .shaker, #gift:not(.open) .shaker { animation: none !important; }
@@ -362,7 +364,7 @@
         <p class="note">Your donation goes straight to the charity. I never handle any money.</p>
         <p class="note">Brandon Dong</p>
       </div>
-      <div class="frame"><img src="photos/gns-mothers.jpg" alt="Three mothers smiling and waving, each holding a newborn in a knit hat against her chest. Photo: Global Newborn Solutions" style="object-position:50% 35%"></div>
+      <div class="frame mothers"><img src="photos/gns-mothers.jpg" alt="Three mothers smiling and waving, each holding a newborn in a knit hat against her chest. Photo: Global Newborn Solutions" style="object-position:50% 35%"></div>
     </div>
 
     <div id="gift" aria-hidden="true">
