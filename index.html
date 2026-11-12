@@ -272,6 +272,10 @@
   /* Words a little closer to the centre. */
   .scene { padding-top: clamp(52px, 13vh, 130px); padding-left: clamp(34px, 11vw, 190px); padding-right: clamp(26px, 6vw, 100px); }
 
+  .factfig { margin: 6px 0 18px; max-width: 340px; }
+  .factfig img { width: 100%; display: block; }
+  .factfig figcaption { font-size: 14px; line-height: 1.45; color: #5c5043; margin-top: 8px; }
+
   /* Reduced-motion setting: keep the gentle fades, drop the shaking and flying. */
   @media (prefers-reduced-motion: reduce) {
     #gift .shaker, #gift.open .shaker, #gift:not(.open) .shaker { animation: none !important; }
@@ -337,7 +341,7 @@
         <p class="lead">A reusable mattress, heated with boiled water, keeps a newborn warm without electricity.</p>
         <p class="line huge"><mark>$25</mark> makes one. It serves <u class="hit">four babies.</u></p>
       </div>
-      <div class="frame slot"><span>Placeholder: GNS photo of a Dream Warmer in use</span></div>
+      <div class="frame"><img src="photos/gns-dream-warmer.jpg" alt="A newborn named Bintu wrapped on a Dream Warmer mattress" style="object-position:50% 20%"></div>
     </div>
 
     <div class="scene" data-bg="#e8d9c3" style="grid-template-rows:auto">
@@ -432,6 +436,10 @@
       <h2>What your gift does</h2>
       <div>
         <p>These figures are the charity's own, from its donation page.</p>
+        <figure class="factfig">
+          <img src="photos/gns-nurse-kit.jpg" alt="Nurse Abubakar Atiku Awal holding a Dream Warmer backpack and thermos">
+          <figcaption>Abubakar Atiku Awal, a Senior Enrolled Nurse at Leyaata Hospital, with the Dream Warmer carry backpack and thermos that $50 pays for. Photo: Global Newborn Solutions.</figcaption>
+        </figure>
         <ul class="tiers">
           <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$25</b><span>makes one mattress, which serves four babies</span></a></li>
           <li><a href="https://www.globalnewborn.org/donate" target="_blank" rel="noopener"><b>$50</b><span>the backpack, sleeve and thermos for carrying a warmer to a patient</span></a></li>
