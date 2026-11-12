@@ -307,14 +307,15 @@
 
     <div class="scene dark dim" data-bg="#47525c">
       <div class="words">
-        <p class="line huge"><span id="count">1</span> million</p>
-        <p class="stat-rest">newborn babies die within their <u class="hit">first 24 hours.</u></p>
-        <p class="source">World Health Organization, newborn mortality fact sheet</p>
+        <p class="line huge">Up to <span id="count">85</span>%</p>
+        <p class="stat-rest">of newborns in hospitals in low-resource countries become <u class="hit">dangerously cold.</u></p>
+        <p class="sub">For every degree colder, a newborn's risk of dying rises by 80%.</p>
+        <p class="source">Lunze et al., BMC Medicine, 2013 (review of hospital studies). Mullany et al., 2010 (study of 23,240 newborns in Nepal).</p>
       </div>
     </div>
 
     <div class="scene dark" data-bg="#3d4852" style="grid-template-rows:auto">
-      <div class="words"><p class="line huge">They were given the <mark>same gift,</mark> and they lose it within a <u class="hit">single day.</u></p></div>
+      <div class="words"><p class="line huge">They were given the <mark>same gift,</mark> and <u class="hit">the cold can take it away.</u></p></div>
     </div>
 
     <div class="scene dark" data-bg="#46515a" style="grid-template-rows:auto">
@@ -478,7 +479,7 @@
       var start = performance.now() + 800, ms = 1200;
       (function tick(now) {
         var t = Math.max(0, Math.min(1, (now - start) / ms));
-        count.textContent = t < 1 ? (1 - Math.pow(1 - t, 3)).toFixed(2) : '1';
+        count.textContent = t < 1 ? String(Math.round(85 * (1 - Math.pow(1 - t, 3)))) : '85';
         if (t < 1) requestAnimationFrame(tick);
       })(performance.now());
     }
